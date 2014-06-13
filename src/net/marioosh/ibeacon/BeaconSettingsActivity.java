@@ -40,9 +40,10 @@ public class BeaconSettingsActivity extends Activity {
 		relativeLayout1 = (RelativeLayout) findViewById(R.id.relativeLayout1);
 	
 		beacon = getIntent().getParcelableExtra(MainActivity.THIS_BEACON);
-		
+		Log.i(BC, beacon+"");
 		reconnect();
-		
+
+		/*
 		Log.i(BC, "Connection...");
 		bc.authenticate();
 		if(bc.isConnected()) {
@@ -51,6 +52,7 @@ public class BeaconSettingsActivity extends Activity {
 			Log.i(BC, "Not Connected...");
 		}
 		bc.close();
+		*/
 		
 		
 	}
