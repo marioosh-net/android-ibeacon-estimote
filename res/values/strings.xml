@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ibeacon</string>
+    <string name="hello_world">Hello iBeacon!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Close</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+</resources>
