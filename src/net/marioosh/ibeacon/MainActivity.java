@@ -155,8 +155,14 @@ public class MainActivity extends ActionBarActivity {
 				@Override
 				public void onServiceReady() {
 					try {
-						beaconManager.startRanging(MY_ESTIMOTE_BEACON);
-						beaconManager.startMonitoring(MY_ESTIMOTE_BEACON);
+						Switch rangingSwitch = (Switch) findViewById(R.id.switch1);
+						Switch monitoringSwitch = (Switch) findViewById(R.id.switch2);
+						if(rangingSwitch.isChecked()) {
+							beaconManager.startRanging(MY_ESTIMOTE_BEACON);
+						}
+						if(monitoringSwitch.isChecked()) {
+							beaconManager.startMonitoring(MY_ESTIMOTE_BEACON);
+						}
 					} catch (RemoteException e) {
 						Log.e(TAG, "Cannot start ranging", e);
 					}
