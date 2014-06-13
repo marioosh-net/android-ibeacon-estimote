@@ -14,14 +14,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
+import com.estimote.sdk.connection.BeaconConnection;
+import com.estimote.sdk.utils.L;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -31,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
 	/**
 	 * specyficzny bekon, major i minor podany
 	 */
-	private static final Region MY_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, 63890, 27793);
+	private static final Region MY_ESTIMOTE_BEACON = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, 63890, 27793);
 	
 	protected static final String TAG = "TAG";
 	private BeaconManager beaconManager;
@@ -40,11 +45,6 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
 
 		beaconManager = new BeaconManager(getApplicationContext());
 		
@@ -73,11 +73,73 @@ public class MainActivity extends ActionBarActivity {
 					}
 				}
 			});
-		}
+			beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {				
+				@Override
+				public void onExitedRegion(Region arg0) {
+					Toast.makeText(getApplicationContext(), "Poza regionem", Toast.LENGTH_SHORT).show();
+				}
+				
+				@Override
+				public void onEnteredRegion(Region arg0, List<Beacon> arg1) {
+					Toast.makeText(getApplicationContext(), "W regionie", Toast.LENGTH_SHORT).show();
+				}
+			});
+			
+			initSwitches();
 		
+		}
 
 	}
 	
+	private void initSwitches() {
+		/**
+		 * On / Off Ranging / Monitoring
+		 */
+		Switch rangingSwitch = (Switch) findViewById(R.id.switch1);
+		Switch monitoringSwitch = (Switch) findViewById(R.id.switch2);
+		
+		monitoringSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					try {
+						beaconManager.startMonitoring(MY_ESTIMOTE_BEACON);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						beaconManager.stopMonitoring(MY_ESTIMOTE_BEACON);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		rangingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					try {
+						beaconManager.startRanging(MY_ESTIMOTE_BEACON);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						beaconManager.stopRanging(MY_ESTIMOTE_BEACON);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
 	/**
 	 * wyjscie
 	 * @param view
@@ -85,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 	public void end(View view) {
 		finish();
 	}
-
+	
 	@Override
 	protected void onStart() {
 		if(beaconManager.isBluetoothEnabled()) {
@@ -93,7 +155,8 @@ public class MainActivity extends ActionBarActivity {
 				@Override
 				public void onServiceReady() {
 					try {
-						beaconManager.startRanging(MY_ESTIMOTE_BEACONS);
+						beaconManager.startRanging(MY_ESTIMOTE_BEACON);
+						beaconManager.startMonitoring(MY_ESTIMOTE_BEACON);
 					} catch (RemoteException e) {
 						Log.e(TAG, "Cannot start ranging", e);
 					}
@@ -107,7 +170,8 @@ public class MainActivity extends ActionBarActivity {
 	protected void onStop() {
 		try {
 			if(beaconManager.isBluetoothEnabled()) {
-				beaconManager.stopRanging(MY_ESTIMOTE_BEACONS);
+				beaconManager.stopRanging(MY_ESTIMOTE_BEACON);
+				beaconManager.stopMonitoring(MY_ESTIMOTE_BEACON);
 			}
 		} catch (RemoteException e) {
 			Log.e(TAG, "Cannot stop but it does not matter now", e);
@@ -141,23 +205,6 @@ public class MainActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-			return rootView;
-		}
 	}
 
 }

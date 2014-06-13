@@ -7,5 +7,9 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Close</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="rangeDesc">Odległość od bekona</string>
+    <string name="power">Moc sygnału</string>
+    <string name="rangingSwitch">Ranging</string>
+    <string name="monitoringSwitch">Monitoring</string>    
 
 </resources>
