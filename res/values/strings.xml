@@ -7,9 +7,11 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Close</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="rangeDesc">Odległość od bekona</string>
-    <string name="power">Moc sygnału</string>
+    <string name="rangeDesc">Range</string>
+    <string name="power">Power</string>
     <string name="rangingSwitch">Ranging</string>
-    <string name="monitoringSwitch">Monitoring</string>    
+    <string name="monitoringSwitch">Monitoring</string>
+    <string name="chars">Beacon settings</string>
+    <string name="title_activity_beacon_settings">BeaconSettingsActivity</string>
 
 </resources>

@@ -38,6 +38,10 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <activity
+            android:name="net.marioosh.ibeacon.BeaconSettingsActivity"
+            android:label="@string/title_activity_beacon_settings" >
+        </activity>
     </application>
 
 </manifest>

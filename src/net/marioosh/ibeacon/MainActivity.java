@@ -26,12 +26,14 @@ import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 import com.estimote.sdk.connection.BeaconConnection;
+import com.estimote.sdk.connection.BeaconConnection.BeaconCharacteristics;
 import com.estimote.sdk.utils.L;
 
 public class MainActivity extends ActionBarActivity {
 
 	private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 	private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+	public static final String THIS_BEACON = "beacon";
 	
 	/**
 	 * specyficzny bekon, major i minor podany
@@ -39,7 +41,10 @@ public class MainActivity extends ActionBarActivity {
 	private static final Region MY_ESTIMOTE_BEACON = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, 63890, 27793);
 	
 	protected static final String TAG = "TAG";
+	protected static final String BC = "BeaconConnection";
+	
 	private BeaconManager beaconManager;
+	private Beacon beacon;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,20 +62,25 @@ public class MainActivity extends ActionBarActivity {
 				@Override
 				public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
 					Log.i(TAG, "Ranged beacons: " + beacons);
-					Log.i(TAG, Utils.computeAccuracy(beacons.get(0))+"");
+					beacon = beacons.get(0);
+					Log.i(TAG, Utils.computeAccuracy(beacon)+"");
+					
+					
+					TextView bInfo = (TextView) findViewById(R.id.textView1);
+					bInfo.setText(beacon.getName() + ", "+beacon.getMacAddress());
 					
 					double odl = Utils.computeAccuracy(beacons.get(0));
 					TextView status = (TextView) findViewById(R.id.textView2);
 					status.setText(String.format("%1$,.2f", odl));
 					
 					SeekBar sb = (SeekBar) findViewById(R.id.seekBar1);
-					sb.setProgress((int) ((10-odl*2)+1));
+					sb.setProgress((int) ((10-odl*10)+1));
 					
-					if(odl < 0.5) {
+					if(odl < 0.1) {
 						Toast.makeText(getApplicationContext(), "Mam Ciê!", Toast.LENGTH_SHORT).show();						
 						Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
 						startActivity(intent);
-					}
+					}					
 				}
 			});
 			beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {				
@@ -138,6 +148,12 @@ public class MainActivity extends ActionBarActivity {
 				}
 			}
 		});
+	}
+	
+	public void settings(View view) {
+		Intent i = new Intent(this, BeaconSettingsActivity.class);
+		i.putExtra(THIS_BEACON, beacon);
+		startActivity(i);
 	}
 
 	/**
